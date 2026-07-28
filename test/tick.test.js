@@ -86,3 +86,20 @@ test("한 번에 들어온 큰 dt는 MAX_DT_MS로 잘린다", () => {
   tick(s, 5_000); // 탭을 오래 비활성화한 경우
   assert.equal(s.now, MAX_DT_MS);
 });
+
+test("dt가 NaN이면 상태가 영구 오염되지 않는다", () => {
+  const s = createGame();
+  const initialNow = s.now;
+  tick(s, NaN);
+  assert.ok(Number.isFinite(s.now), "state.now는 유한한 수여야 한다");
+  assert.equal(s.now, initialNow, "NaN dt는 시간을 진행시키지 않아야 한다");
+});
+
+test("dt가 NaN인 후에도 에너지 충전이 정상 동작한다", () => {
+  const s = createGame();
+  s.players[0].energy = 0;
+  tick(s, NaN);
+  assert.ok(Number.isFinite(s.players[0].energy), "에너지는 유한한 수여야 한다");
+  advance(s, 6500);
+  assert.ok(Math.abs(s.players[0].energy - 1) < 0.01, `에너지 충전이 정상인지 확인: energy=${s.players[0].energy}`);
+});

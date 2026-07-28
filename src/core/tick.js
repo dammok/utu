@@ -15,7 +15,8 @@ export const MAX_DT_MS = 120;
 export function tick(state, dtMs) {
   if (state.over) return;
 
-  const dt = Math.max(0, Math.min(MAX_DT_MS, dtMs));
+  // NaN, Infinity, undefined는 상태를 영구 오염시킨다: state.now와 에너지 모두 NaN 고착.
+  const dt = Number.isFinite(dtMs) ? Math.max(0, Math.min(MAX_DT_MS, dtMs)) : 0;
   state.now += dt;
 
   // 국면 판정을 먼저 한다. 이번 프레임의 충전·만료가 새 국면 값을 따르도록.
