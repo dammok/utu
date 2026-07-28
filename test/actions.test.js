@@ -166,3 +166,50 @@ test("없는 결과 id를 쓰면 조용히 실패한다", () => {
   assert.equal(res.ok, false);
   assert.equal(res.reason, "gone");
 });
+
+test("잡기를 연속으로 하면 보너스가 그만큼 쌓인다", () => {
+  // 상한까지 채워둔 에너지는 건드리지 않고 보너스만 누적돼야 한다.
+  const s = createGame();
+  const me = s.players[0], foe = s.players[1];
+  me.energy = 3;
+  const put = (p, idx) => Object.assign(p, { state: "board", path: 0, idx });
+  put(me.pieces[0], 4);  put(foe.pieces[0], 6);
+  put(me.pieces[1], 9);  put(foe.pieces[1], 11);
+  put(me.pieces[2], 14); put(foe.pieces[2], 16);
+
+  for (let i = 0; i < 3; i++) {
+    const r = give(s, 0, 2);
+    const res = useResult(s, 0, r.id, i, nodeAt(me.pieces[i]));
+    assert.equal(res.caught, 1);
+    assert.equal(me.bonus, i + 1, `${i + 1}번째 잡기 후 보너스`);
+  }
+  assert.equal(me.energy, 3, "에너지는 잡기로 변하지 않는다");
+});
+
+test("업힌 말을 한 번에 여러 개 잡아도 보너스는 1회다", () => {
+  // 보상은 '잡은 횟수'가 아니라 '잡은 행동'에 붙는다.
+  const s = createGame();
+  const me = s.players[0], foe = s.players[1];
+  Object.assign(me.pieces[0], { state: "board", path: 0, idx: 4 });
+  for (const i of [0, 1, 2])
+    Object.assign(foe.pieces[i], { state: "board", path: 0, idx: 6 });
+
+  const r = give(s, 0, 2);
+  const res = useResult(s, 0, r.id, 0, nodeAt(me.pieces[0]));
+  assert.equal(res.caught, 3);
+  assert.equal(me.bonus, 1);
+});
+
+test("윷 보너스와 잡기 보너스는 같은 카운터에 함께 쌓인다", () => {
+  const s = createGame();
+  const me = s.players[0];
+  me.energy = 3;
+  throwYut(s, 0, ALL_FLAT);          // 윷 → 보너스 1
+  assert.equal(me.bonus, 1);
+
+  Object.assign(me.pieces[0], { state: "board", path: 0, idx: 4 });
+  Object.assign(s.players[1].pieces[0], { state: "board", path: 0, idx: 6 });
+  const r = give(s, 0, 2);
+  useResult(s, 0, r.id, 0, nodeAt(me.pieces[0]));
+  assert.equal(me.bonus, 2, "두 종류가 합산된다");
+});
