@@ -3,6 +3,12 @@ import { PHASES, doneCount } from "../core/game.js";
 import { YUT } from "../core/yut.js";
 import { canMove } from "../core/move.js";
 import { canThrow } from "../core/actions.js";
+import { drawMiniStatue } from "./render-board.js";
+
+const SVGNS = "http://www.w3.org/2000/svg";
+/** drawMiniStatue(s=0.85, baseY=0)의 실측 bbox(양 진영 모두 대략 -11~14.5 x, -37~0 y)에
+ *  여백을 살짝 더한 viewBox. render-board.js와 같은 그림을 그리므로 여기서 바꾸지 않는다. */
+const WP_ICON_VIEWBOX = "-14 -40 32 44";
 
 const $ = (id) => document.getElementById(id);
 
@@ -98,11 +104,13 @@ function renderWaiting(state, selection, handlers) {
     const v = P.id === 0 && selection !== null ? selection.v : null;
     for (const p of P.pieces) {
       const d = document.createElement("div");
+      // 상태 세 가지 — 대기 중(석상 아이콘) / 판 위(같은 아이콘, 흐리게) / 골인(체크).
+      // 숫자 배지는 쓰지 않는다 — 판의 말과 같은 조각상으로 보여야 한다.
       if (p.state === "done") { d.className = "wp done"; d.textContent = "✓"; }
-      else if (p.state === "board") { d.className = "wp dead"; d.textContent = p.id + 1; }
+      else if (p.state === "board") { d.className = "wp dead"; appendWpIcon(d, P.id); }
       else {
         d.className = "wp";
-        d.textContent = p.id + 1;
+        appendWpIcon(d, P.id);
         if (v !== null && canMove(p, v)) {
           d.classList.add("can");
           d.title = "출발시키기";
@@ -112,4 +120,12 @@ function renderWaiting(state, selection, handlers) {
       box.appendChild(d);
     }
   }
+}
+
+function appendWpIcon(container, teamId) {
+  const svg = document.createElementNS(SVGNS, "svg");
+  svg.setAttribute("viewBox", WP_ICON_VIEWBOX);
+  svg.setAttribute("class", "wp-icon");
+  drawMiniStatue(svg, teamId);
+  container.appendChild(svg);
 }

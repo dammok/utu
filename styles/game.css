@@ -97,6 +97,9 @@ h1{font-size:19px;letter-spacing:-.02em;font-weight:800}
 .wp.can:hover{transform:scale(1.15)}
 .wp.dead{opacity:.28}
 .wp.done{border-color:var(--gold);background:#3d2f12;color:var(--gold)}
+/* 대기 말 아이콘 — render-board.js의 drawMiniStatue()와 같은 그림이라 판의 석상과
+   패널이 같은 조각상으로 보인다. 퍼센트 크기라 44px(청군)/22px(홍군 모바일) 모두 비율 유지. */
+.wp-icon{width:58%;height:80%;display:block;overflow:visible}
 
 /* ---------- 결과 배너 ---------- */
 #over{
