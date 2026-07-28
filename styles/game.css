@@ -170,3 +170,7 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 .piece.can circle.body{ stroke:var(--gold); stroke-width:3.5 }
 .piece.capture circle.body{ stroke:#ff6a55; stroke-width:4 }
 .piece.capture{ filter:drop-shadow(0 0 10px rgba(255,90,70,.9)) }
+
+/* 헤더 버튼도 터치 타깃 44px을 지킨다. 프로토타입에서 그대로 옮겨온
+   패딩값은 데스크톱 마우스 기준이라 폰에서 누르기 어렵다. */
+.btn, .seg button{ min-height:44px }
