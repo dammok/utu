@@ -1,0 +1,172 @@
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:16px;gap:14px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- 헤더 ---------- */
+header{
+  width:100%;max-width:1080px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+h1{font-size:19px;letter-spacing:-.02em;font-weight:800}
+.spacer{flex:1}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{
+  background:none;border:0;color:var(--dim);font:inherit;font-size:12px;font-weight:600;
+  padding:7px 13px;cursor:pointer;transition:.15s;
+}
+.seg button.on{background:var(--card2);color:var(--ink)}
+.seg button:hover:not(.on){color:var(--ink)}
+.btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink);
+  font:inherit;font-size:12px;font-weight:600;padding:7px 14px;border-radius:9px;cursor:pointer;transition:.15s;
+}
+.btn:hover{background:var(--card2);border-color:#54432f}
+
+/* ---------- 레이아웃 ---------- */
+.side{display:flex;flex-direction:column;gap:12px}
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;
+}
+.panel.me{border-color:#2c4d70}
+.panel.ai{border-color:#5e332c}
+
+.phead{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.pname{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.pstat{margin-left:auto;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.pstat b{color:var(--gold)}
+
+/* ---------- 에너지 ---------- */
+.energy{display:flex;gap:5px;height:15px;margin-bottom:10px}
+.eseg{
+  flex:1;background:#120f0c;border-radius:5px;overflow:hidden;position:relative;
+  border:1px solid #332a20;
+}
+.efill{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);border-radius:4px}
+.me .efill{background:linear-gradient(90deg,var(--blue-d),var(--blue))}
+.ai .efill{background:linear-gradient(90deg,var(--red-d),var(--red))}
+.me .eseg.full{color:var(--blue);box-shadow:0 0 8px rgba(59,130,196,.55)}
+.ai .eseg.full{color:var(--red);box-shadow:0 0 8px rgba(207,74,60,.55)}
+
+/* ---------- 던지기 ---------- */
+.throw{
+  width:100%;padding:12px;border:0;border-radius:11px;cursor:pointer;
+  font:inherit;font-size:14px;font-weight:800;letter-spacing:-.01em;
+  background:linear-gradient(180deg,var(--blue),var(--blue-d));color:#fff;
+  transition:.12s;box-shadow:0 3px 0 #143f68;
+}
+.throw:active:not(:disabled){transform:translateY(3px);box-shadow:0 0 0 #143f68}
+.throw:disabled{background:#2a241d;color:#5f5344;box-shadow:0 3px 0 #1c1712;cursor:not-allowed}
+.throw .k{display:block;font-size:10px;font-weight:600;opacity:.7;margin-top:2px}
+.throw.bonus{background:linear-gradient(180deg,#f0bb52,#c98d20);color:#2a1f08;box-shadow:0 3px 0 #8f6412}
+
+/* ---------- 윷 결과 칩 ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:34px}
+.chip{
+  display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:9px;
+  background:var(--card2);border:1px solid var(--line);
+  font-size:12px;font-weight:700;cursor:pointer;transition:.13s;user-select:none;
+}
+.chip .v{font-size:10px;color:var(--dim);font-weight:600}
+.chip .n{font-size:10px;color:var(--gold);font-weight:800}
+.chip:hover{border-color:#6b543a;transform:translateY(-1px)}
+.chip.sel{background:var(--gold);color:#221a0c;border-color:var(--gold)}
+.chip.sel .v,.chip.sel .n{color:#5a4310}
+.chip.back{border-color:#6d3a52}
+.chip.static{cursor:default}
+.chip.static:hover{transform:none;border-color:var(--line)}
+.empty-hint{font-size:11px;color:#6b5c4a;padding:9px 2px}
+
+/* ---------- 대기 말 ---------- */
+.waiting{display:flex;gap:5px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.waiting .lbl{font-size:10px;color:var(--dim);margin-right:2px}
+.wp{
+  width:22px;height:22px;border-radius:50%;border:2px solid;transition:.13s;
+  display:grid;place-items:center;font-size:9px;font-weight:800;
+}
+.me .wp{border-color:var(--blue);background:#152a3f;color:#9dc8ee}
+.ai .wp{border-color:var(--red);background:#3a1c17;color:#eda79d}
+.wp.can{box-shadow:0 0 0 3px rgba(224,168,60,.4);cursor:pointer}
+.wp.can:hover{transform:scale(1.15)}
+.wp.dead{opacity:.28}
+.wp.done{border-color:var(--gold);background:#3d2f12;color:var(--gold)}
+
+/* ---------- 결과 배너 ---------- */
+#over{
+  position:fixed;inset:0;background:rgba(10,8,6,.82);backdrop-filter:blur(6px);
+  display:none;place-items:center;z-index:50;
+}
+#over.on{display:grid}
+.overcard{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:34px 44px;text-align:center;
+}
+.overcard h2{font-size:30px;margin-bottom:8px;letter-spacing:-.02em}
+.overcard p{color:var(--dim);font-size:13px;margin-bottom:20px}
+
+/* ==================== 아래부터 이번 태스크 신규/교체 규칙 ==================== */
+
+:root{
+  --bg:#12160f; --card:#1b2016; --card2:#232a1d; --line:#39432c;
+  --ink:#e9e6d5; --dim:#9aa383; --hanji:#f0e6cd; --brush:#3b2f24;
+  --blue:#3b82c4; --blue-d:#1e5c96; --red:#cf4a3c; --red-d:#9e3226;
+  --gold:#e0a83c; --leaf:#5c7a3f;
+}
+body{
+  background:
+    radial-gradient(120% 80% at 50% 0%, #1e2717 0%, transparent 60%),
+    var(--bg);
+}
+
+/* 세로 우선. 데스크톱에서만 2단. */
+main{
+  width:100%; max-width:1080px;
+  display:grid; grid-template-columns:1fr; gap:14px; align-items:start;
+}
+@media (min-width:901px){ main{ grid-template-columns:1fr 340px; } }
+
+.board-wrap{ position:relative }
+
+/* 조작부는 항상 하단 엄지 도달 범위에 있어야 한다 */
+.panel.me .throw{ margin-top:10px }
+.throw{ min-height:52px }
+.chip{ min-height:44px; padding:0 14px }
+.wp{ width:44px; height:44px }
+
+/* 논블로킹 연출 레이어 — 보드를 가리지 않는다 */
+#fx{
+  position:absolute; inset:0; pointer-events:none; overflow:hidden;
+  border-radius:16px; z-index:10;
+}
+#toast{
+  position:absolute; left:50%; bottom:14px; transform:translateX(-50%);
+  display:flex; flex-direction:column; gap:6px; align-items:center;
+  pointer-events:none; z-index:12;
+}
+
+/* 국면 표시와 진영 표식 */
+h1 small{ font-size:12px; color:var(--gold); font-weight:600; margin-left:8px }
+.mark{
+  width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+  font-size:12px; font-weight:800; flex:none;
+}
+.mark.tiger{ background:#152a3f; color:#9dc8ee; border:2px solid var(--blue) }
+.mark.bear{ background:#3a1c17; color:#eda79d; border:2px solid var(--red) }
+
+svg#board{ width:100%; height:auto; display:block; border-radius:10px }
+.ghost{ opacity:0; transition:opacity .15s; pointer-events:none }
+.ghost.on{ opacity:.9 }
+.target{ transition:opacity .18s, stroke-width .18s; pointer-events:none }
+.piece{ transition:transform .28s cubic-bezier(.4,1.4,.5,1), opacity .2s }
+.piece.hidden{ opacity:0; pointer-events:none }
+.piece.can{ cursor:pointer; filter:drop-shadow(0 0 7px rgba(224,168,60,.85)) }
+.piece.can circle.body{ stroke:var(--gold); stroke-width:3.5 }
+.piece.capture circle.body{ stroke:#ff6a55; stroke-width:4 }
+.piece.capture{ filter:drop-shadow(0 0 10px rgba(255,90,70,.9)) }
