@@ -2,9 +2,11 @@
 
 에너지가 차는 대로 윷을 던지고, 진행도에 따라 점점 빨라지는 1인용 실시간 윷놀이.
 
+**▶ [바로 플레이](https://dammok.github.io/utu/)** — 설치 없이 브라우저에서 바로 돌아간다.
+
 ## 실행
 
-정적 파일이므로 아무 HTTP 서버로나 열면 된다. ES 모듈을 쓰므로 `file://`로는 열리지 않는다.
+로컬에서 돌리려면 아무 HTTP 서버로나 열면 된다. ES 모듈을 쓰므로 `file://`로는 열리지 않는다.
 
     npx --yes serve .
 
@@ -22,7 +24,7 @@
 index.html          styles/game.css
 src/core/  board.js yut.js move.js game.js tick.js actions.js
 src/ai/    ai.js
-src/ui/    render-board.js render-panel.js effects.js input.js
+src/ui/    render-board.js render-panel.js effects.js input.js animal-icons.js
 src/main.js
 test/      board yut move game tick actions ai simulation (.test.js)
 ```
