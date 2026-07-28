@@ -256,8 +256,10 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
   /* 국면 표시는 숨기지 않는다. 지금 어느 국면인지 알려주는 유일한 상시 표시라,
      이게 없으면 배너가 지나간 뒤 속도가 왜 달라졌는지 알 길이 없다. */
   h1 small{ margin-left:6px }
-  .seg button{ padding:0 8px; font-size:11px; min-height:36px }
-  .btn{ padding:0 10px; font-size:11px; min-height:36px }
+  /* 난이도 버튼(#diff 안), 새 게임(#restart), 결과 화면 다시 하기(#overBtn)는
+     사람이 직접 누르는 컨트롤이라 44px 예외 대상이 아니다. 폰트·좌우 패딩만 줄인다. */
+  .seg button{ padding:0 8px; font-size:11px; min-height:44px }
+  .btn{ padding:0 10px; font-size:11px; min-height:44px }
 
   main{
     flex:1 1 auto; min-height:0;

@@ -122,6 +122,11 @@ function playPhase(ev) {
     "fx-phase", {}, 1800);
 }
 
+/** 이벤트 큐와 무관하게 토스트 한 줄을 띄운다. UI 메시지 통로를 effects.js 하나로 유지하기 위한 창구. */
+export function notify(text, tone = "") {
+  say(text, tone);
+}
+
 /**
  * 확정된 이벤트들을 연출한다. 상태를 읽지도 쓰지도 않는다.
  * @param {Array<{type:string}>} events

@@ -5,7 +5,7 @@ import { nodeAt, simulate } from "./core/move.js";
 import { aiTick, AI_LEVELS } from "./ai/ai.js";
 import { buildBoard, renderBoard, showGhost, hideGhost } from "./ui/render-board.js";
 import { buildPanels, renderPanels, renderEnergy } from "./ui/render-panel.js";
-import { initEffects, playEvents } from "./ui/effects.js";
+import { initEffects, playEvents, notify } from "./ui/effects.js";
 import { bindInput } from "./ui/input.js";
 
 let state = null;
@@ -18,6 +18,10 @@ let lastTs = 0;
 // "방금 끝남"을 놓친다 — 청군이 마지막 말을 클릭해 골인시키는 순간이 그 경우다.
 // 이 플래그는 프레임 경계와 무관하게 전환을 안정적으로 잡아낸다.
 let shownOver = false;
+// 청군(내 말) 위치 스냅샷: pieceId -> 화면에 마지막으로 그려진 노드(nodeAt 값).
+// renderBoard가 호출될 때마다 갱신된다 — 렌더는 dirty인 프레임에만 일어나므로
+// 이 값은 항상 정확히 "지금 화면에 보이는 상태"다.
+let blueSnapshot = {};
 
 const svg = document.getElementById("board");
 
@@ -28,6 +32,7 @@ function newGame() {
   selection = null;
   lastTs = 0;
   shownOver = false;
+  blueSnapshot = {};
   document.body.dataset.phase = "0";
   document.getElementById("over").classList.remove("on");
   initEffects();
@@ -47,12 +52,23 @@ function newGame() {
 
 function clickPiece(pieceId) {
   if (selection === null || state.over) return;
-  const piece = state.players[0].pieces[pieceId];
-  // 클릭 시점의 위치를 함께 넘긴다 — 그 사이 잡혔다면 코어가 무효로 판정한다
-  useResult(state, 0, selection.resultId, pieceId, nodeAt(piece));
-  // 성공이든 무효든 선택은 푼다. 칩을 남길지는 코어가 결정한다.
-  selection = null;
-  hideGhost();
+  // expectedNode는 "클릭한 순간의 실제 위치"가 아니라 "플레이어가 화면에서 본 위치"여야
+  // 한다. JS는 단일 스레드라 nodeAt(piece)를 클릭 직후 여기서 다시 읽으면 그 사이에
+  // 아무도 끼어들 수 없으므로 현재 위치와 항상 같아져 버려 — 무효화 판정
+  // (nodeAt(piece) !== expectedNode)이 구조적으로 절대 참이 될 수 없다. 한 프레임 낡은
+  // 값처럼 보이지만 의도한 것이다: blueSnapshot은 renderBoard가 마지막으로 그린,
+  // 즉 플레이어가 실제로 보고 클릭을 결정한 그 위치를 담는다. 그 사이 AI가 이 말을
+  // 잡았다면 스냅샷과 지금의 실제 위치가 어긋나고, 코어가 의도대로 무효 처리한다.
+  const expectedNode = blueSnapshot[pieceId] ?? null;
+  const r = useResult(state, 0, selection.resultId, pieceId, expectedNode);
+  if (r.ok || r.reason === "invalidated") {
+    // 성공이든 무효든 선택은 푼다. 칩을 남길지는 코어가 결정한다.
+    selection = null;
+    hideGhost();
+  } else if (r.reason === "illegal") {
+    // 칩이 소모되지 않았으니 선택은 유지한다 — 플레이어가 다른 말을 바로 클릭할 수 있게.
+    notify("그 말은 이 수로 움직일 수 없습니다", "bad");
+  }
   markDirty();
 }
 
@@ -105,6 +121,9 @@ function loop(ts) {
   if (dirty) {
     renderBoard(state, selection);
     renderPanels(state, selection, panelHandlers);
+    // 방금 그린 화면을 스냅샷으로 남긴다 — clickPiece가 "화면에서 본 위치"를
+    // 읽을 수 있는 유일한 출처. 상대 말은 클릭 대상이 아니므로 청군만 기록한다.
+    for (const p of state.players[0].pieces) blueSnapshot[p.id] = nodeAt(p);
     dirty = false;
   }
   if (state.over && !shownOver) { shownOver = true; finishScreen(); }
