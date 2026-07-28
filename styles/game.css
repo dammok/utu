@@ -179,3 +179,61 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 .chip .g{ font-size:16px; line-height:1 }
 .eseg.full{ animation:pop .18s ease-out }
 @keyframes pop{ from{ transform:scale(1) } 50%{ transform:scale(1.06) } to{ transform:scale(1) } }
+
+/* 던지기 — 보드 구석 작은 카드. 전체화면 오버레이가 아니다. */
+.fx-throw{
+  position:absolute; display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:8px 12px; border-radius:12px; background:rgba(18,22,15,.82);
+  border:1px solid var(--line); animation:fxin .12s ease-out;
+}
+.fx-throw.bonus{ border-color:var(--gold); box-shadow:0 0 16px rgba(224,168,60,.4) }
+.fx-throw .sticks{ display:flex; gap:4px }
+.fx-throw i{
+  width:8px; height:34px; border-radius:4px; display:block;
+  background:linear-gradient(90deg,#8d6b45,#c9a877 42%,#8d6b45);
+  animation:flip .25s ease-out;
+}
+.fx-throw i.flat{ background:linear-gradient(90deg,#e8dcc2,#fff8e8 42%,#d8c9aa) }
+.fx-throw i.mark{ box-shadow:inset 0 0 0 1px #b03a2e }
+.fx-throw .rname{ font-size:16px; font-weight:900; letter-spacing:.06em }
+@keyframes flip{ from{ transform:rotateY(540deg) } to{ transform:rotateY(0) } }
+@keyframes fxin{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+
+/* 동물 러너 */
+.fx-runner{ position:absolute; font-size:26px; line-height:1; will-change:left,top }
+
+/* 잡기 */
+.fx-hit{
+  position:absolute; width:54px; height:54px; margin:-27px 0 0 -27px;
+  border-radius:50%; border:3px solid #ff6a55; animation:hit .6s ease-out forwards;
+}
+@keyframes hit{ from{ transform:scale(.4); opacity:1 } to{ transform:scale(1.9); opacity:0 } }
+
+/* 국면 배너 */
+.fx-phase{
+  position:absolute; left:50%; top:42%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:14px 30px; border-radius:14px; background:rgba(18,22,15,.88);
+  border:1px solid var(--gold); animation:phasein 1.8s ease-out forwards;
+}
+.fx-phase b{ font-size:26px; color:var(--gold); letter-spacing:.14em }
+.fx-phase span{ font-size:12px; color:var(--dim) }
+@keyframes phasein{
+  0%{ opacity:0; transform:translate(-50%,-40%) scale(.9) }
+  14%,72%{ opacity:1; transform:translate(-50%,-50%) scale(1) }
+  100%{ opacity:0; transform:translate(-50%,-56%) scale(1) }
+}
+
+/* 국면이 오르면 화면 톤이 바뀐다 */
+body[data-phase="1"]{ --leaf:#7a7a2f }
+body[data-phase="2"]{ --leaf:#8a4a2a }
+body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
+
+/* 토스트 */
+.toast-line{
+  padding:6px 12px; border-radius:9px; font-size:12px; font-weight:700;
+  background:rgba(18,22,15,.9); border:1px solid var(--line);
+  animation:fxin .12s ease-out;
+}
+.toast-line.good{ color:var(--gold); border-color:var(--gold) }
+.toast-line.bad{ color:#ff9b8a; border-color:#7a3a2e }
