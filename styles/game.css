@@ -1,0 +1,380 @@
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+  padding:16px;gap:14px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- 헤더 ---------- */
+header{
+  width:100%;max-width:1080px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+h1{font-size:19px;letter-spacing:-.02em;font-weight:800}
+.spacer{flex:1}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{
+  background:none;border:0;color:var(--dim);font:inherit;font-size:12px;font-weight:600;
+  padding:7px 13px;cursor:pointer;transition:.15s;
+}
+.seg button.on{background:var(--card2);color:var(--ink)}
+.seg button:hover:not(.on){color:var(--ink)}
+.btn{
+  background:var(--card);border:1px solid var(--line);color:var(--ink);
+  font:inherit;font-size:12px;font-weight:600;padding:7px 14px;border-radius:9px;cursor:pointer;transition:.15s;
+}
+.btn:hover{background:var(--card2);border-color:#54432f}
+
+/* ---------- 레이아웃 ---------- */
+.side{display:flex;flex-direction:column;gap:12px}
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;
+}
+.panel.me{border-color:#2c4d70}
+.panel.ai{border-color:#5e332c}
+
+.phead{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.pname{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.pstat{margin-left:auto;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.pstat b{color:var(--gold)}
+
+/* ---------- 에너지 ---------- */
+.energy{display:flex;gap:5px;height:15px;margin-bottom:10px}
+.eseg{
+  flex:1;background:#120f0c;border-radius:5px;overflow:hidden;position:relative;
+  border:1px solid #332a20;
+}
+.efill{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);border-radius:4px}
+.me .efill{background:linear-gradient(90deg,var(--blue-d),var(--blue))}
+.ai .efill{background:linear-gradient(90deg,var(--red-d),var(--red))}
+.me .eseg.full{color:var(--blue);box-shadow:0 0 8px rgba(59,130,196,.55)}
+.ai .eseg.full{color:var(--red);box-shadow:0 0 8px rgba(207,74,60,.55)}
+
+/* ---------- 던지기 ---------- */
+.throw{
+  width:100%;padding:12px;border:0;border-radius:11px;cursor:pointer;
+  font:inherit;font-size:14px;font-weight:800;letter-spacing:-.01em;
+  background:linear-gradient(180deg,var(--blue),var(--blue-d));color:#fff;
+  transition:.12s;box-shadow:0 3px 0 #143f68;
+}
+.throw:active:not(:disabled){transform:translateY(3px);box-shadow:0 0 0 #143f68}
+.throw:disabled{background:#2a241d;color:#5f5344;box-shadow:0 3px 0 #1c1712;cursor:not-allowed}
+.throw .k{display:block;font-size:10px;font-weight:600;opacity:.7;margin-top:2px}
+.throw.bonus{background:linear-gradient(180deg,#f0bb52,#c98d20);color:#2a1f08;box-shadow:0 3px 0 #8f6412}
+
+/* ---------- 윷 결과 칩 ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:34px}
+.chip{
+  display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:9px;
+  background:var(--card2);border:1px solid var(--line);
+  font-size:12px;font-weight:700;cursor:pointer;transition:.13s;user-select:none;
+}
+.chip .v{font-size:10px;color:var(--dim);font-weight:600}
+.chip .n{font-size:10px;color:var(--gold);font-weight:800}
+.chip:hover{border-color:#6b543a;transform:translateY(-1px)}
+.chip.sel{background:var(--gold);color:#221a0c;border-color:var(--gold)}
+.chip.sel .v,.chip.sel .n{color:#5a4310}
+.chip.back{border-color:#6d3a52}
+.chip.static{cursor:default}
+.chip.static:hover{transform:none;border-color:var(--line)}
+.empty-hint{font-size:11px;color:#6b5c4a;padding:9px 2px}
+
+/* ---------- 대기 말 ---------- */
+.waiting{display:flex;gap:5px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.waiting .lbl{font-size:10px;color:var(--dim);margin-right:2px}
+.wp{
+  width:22px;height:22px;border-radius:50%;border:2px solid;transition:.13s;
+  display:grid;place-items:center;font-size:9px;font-weight:800;
+}
+.me .wp{border-color:var(--blue);background:#152a3f;color:#9dc8ee}
+.ai .wp{border-color:var(--red);background:#3a1c17;color:#eda79d}
+.wp.can{box-shadow:0 0 0 3px rgba(224,168,60,.4);cursor:pointer}
+.wp.can:hover{transform:scale(1.15)}
+.wp.dead{opacity:.28}
+.wp.done{border-color:var(--gold);background:#3d2f12;color:var(--gold)}
+/* 대기 말 아이콘 — render-board.js의 drawMiniStatue()와 같은 그림이라 판의 석상과
+   패널이 같은 조각상으로 보인다. 퍼센트 크기라 44px(청군)/22px(홍군 모바일) 모두 비율 유지. */
+.wp-icon{width:58%;height:80%;display:block;overflow:visible}
+
+/* ---------- 결과 배너 ---------- */
+#over{
+  position:fixed;inset:0;background:rgba(10,8,6,.82);backdrop-filter:blur(6px);
+  display:none;place-items:center;z-index:50;
+}
+#over.on{display:grid}
+.overcard{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:34px 44px;text-align:center;
+}
+.overcard h2{font-size:30px;margin-bottom:8px;letter-spacing:-.02em}
+.overcard p{color:var(--dim);font-size:13px;margin-bottom:20px}
+
+/* ==================== 아래부터 이번 태스크 신규/교체 규칙 ==================== */
+
+:root{
+  --bg:#12160f; --card:#1b2016; --card2:#232a1d; --line:#39432c;
+  --ink:#e9e6d5; --dim:#9aa383; --hanji:#f0e6cd; --brush:#3b2f24;
+  --blue:#3b82c4; --blue-d:#1e5c96; --red:#cf4a3c; --red-d:#9e3226;
+  --gold:#e0a83c; --leaf:#5c7a3f;
+  /* 진영 동물 석상 몸통 돌색 — 채도를 눌러 "돌"로 남기되, 청/홍이 명도까지
+     갈리게 해 색맹도 구분할 수 있게 한다 (청은 더 어둡게, 홍은 더 밝게). */
+  --stone-b:#3f5d78; --stone-b-lt:#7b98ac;
+  --stone-r:#a15644; --stone-r-lt:#cf9377;
+}
+body{
+  background:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--leaf) 38%, #12160f) 0%, transparent 60%),
+    var(--bg);
+  transition:background .6s ease;
+}
+
+/* 세로 우선. 데스크톱에서만 2단. */
+main{
+  width:100%; max-width:1080px;
+  display:grid; grid-template-columns:1fr; gap:14px; align-items:start;
+}
+@media (min-width:901px){ main{ grid-template-columns:1fr 340px; } }
+
+.board-wrap{ position:relative }
+
+/* 조작부는 항상 하단 엄지 도달 범위에 있어야 한다 */
+.panel.me .throw{ margin-top:10px }
+.throw{ min-height:52px }
+.chip{ min-height:44px; padding:0 14px }
+.wp{ width:44px; height:44px }
+
+/* 논블로킹 연출 레이어 — 보드를 가리지 않는다 */
+#fx{
+  position:absolute; inset:0; pointer-events:none; overflow:hidden;
+  border-radius:16px; z-index:10;
+}
+#toast{
+  position:absolute; left:50%; bottom:14px; transform:translateX(-50%);
+  display:flex; flex-direction:column; gap:6px; align-items:center;
+  pointer-events:none; z-index:12;
+}
+
+/* 국면 표시와 진영 표식 */
+h1 small{ font-size:12px; color:var(--gold); font-weight:600; margin-left:8px }
+.mark{
+  width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+  font-size:12px; font-weight:800; flex:none;
+}
+.mark.tiger{ background:#152a3f; color:#9dc8ee; border:2px solid var(--blue) }
+.mark.bear{ background:#3a1c17; color:#eda79d; border:2px solid var(--red) }
+
+svg#board{ width:100%; height:auto; display:block; border-radius:10px }
+.ghost{ opacity:0; transition:opacity .15s; pointer-events:none }
+.ghost.on{ opacity:.9 }
+.target{ transition:opacity .18s, stroke-width .18s; pointer-events:none }
+.piece{ transition:transform .28s cubic-bezier(.4,1.4,.5,1), opacity .2s }
+.piece.hidden{ opacity:0; pointer-events:none }
+/* 강조 표시 — 탑에는 circle.body가 없으니 탑 전체(drop-shadow)와
+   바닥 링(.ring, buildBoard에서 미리 심어둔 원) 두 겹으로 표시한다.
+   기획서 9장: 종반 속도의 전제 조건이라 "움직일 수 있음"과 "잡을 수 있음"이
+   판 위에서 한눈에 갈려야 한다. */
+.piece.can{ cursor:pointer; filter:drop-shadow(0 0 7px rgba(224,168,60,.85)) }
+.piece.can .ring{ stroke:var(--gold); stroke-width:3.5 }
+.piece.capture .ring{ stroke:#ff6a55; stroke-width:4.5 }
+.piece.capture{ filter:drop-shadow(0 0 10px rgba(255,90,70,.9)) }
+.piece .ring{ transition:stroke .15s, stroke-width .15s; fill:none }
+
+/* 헤더 버튼도 터치 타깃 44px을 지킨다. 프로토타입에서 그대로 옮겨온
+   패딩값은 데스크톱 마우스 기준이라 폰에서 누르기 어렵다. */
+.btn, .seg button{ min-height:44px }
+
+.chip{ display:flex; align-items:center; gap:6px }
+.chip .g{ font-size:16px; line-height:1 }
+.eseg.full{ animation:pop .18s ease-out }
+@keyframes pop{ from{ transform:scale(1) } 50%{ transform:scale(1.06) } to{ transform:scale(1) } }
+
+/* 던지기 — 보드 구석 작은 카드. 전체화면 오버레이가 아니다. */
+.fx-throw{
+  position:absolute; display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:8px 12px; border-radius:12px; background:rgba(18,22,15,.82);
+  border:1px solid var(--line); animation:fxin .12s ease-out;
+}
+.fx-throw.bonus{ border-color:var(--gold); box-shadow:0 0 16px rgba(224,168,60,.4) }
+.fx-throw .sticks{ display:flex; gap:4px }
+.fx-throw i{
+  width:8px; height:34px; border-radius:4px; display:block;
+  background:linear-gradient(90deg,#8d6b45,#c9a877 42%,#8d6b45);
+  animation:flip .25s ease-out;
+}
+.fx-throw i.flat{ background:linear-gradient(90deg,#e8dcc2,#fff8e8 42%,#d8c9aa) }
+.fx-throw i.mark{ box-shadow:inset 0 0 0 1px #b03a2e }
+.fx-throw .rname{ font-size:16px; font-weight:900; letter-spacing:.06em }
+@keyframes flip{ from{ transform:rotateY(540deg) } to{ transform:rotateY(0) } }
+@keyframes fxin{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+
+/* 동물 러너 — 먹 실루엣 SVG. 크기는 svg 자체의 width/height 속성(effects.js
+   ANIMAL_SVG)이 동물마다 다르게 정해준다. */
+.fx-runner{ position:absolute; line-height:0; will-change:left,top }
+.fx-runner svg{ display:block; overflow:visible }
+
+/* 잡기 — 짧고 강하게, 그 칸에서만 터진다. 전체 300ms, 임팩트는 앞쪽에 몰린다.
+   먹 방울 + 진영색 충격 링 + 짧은 섬광. 반경은 그 칸 주변 50px 남짓. */
+.fx-capture{
+  position:absolute; width:100px; height:100px; margin:-50px 0 0 -50px;
+  pointer-events:none;
+}
+.fx-flash{
+  position:absolute; inset:34px; border-radius:50%; background:#fff8e8;
+  animation:fxflash .14s cubic-bezier(.1,.8,.2,1) forwards;
+}
+@keyframes fxflash{ 0%{ opacity:.95; transform:scale(.5) } 100%{ opacity:0; transform:scale(1.7) } }
+
+.fx-ring{
+  position:absolute; inset:38px; border-radius:50%; border:3px solid;
+  animation:fxring .26s cubic-bezier(.08,.85,.15,1) forwards;
+}
+.fx-ring.b{ border-color:var(--blue) }
+.fx-ring.r{ border-color:var(--red) }
+@keyframes fxring{
+  0%{ transform:scale(.25); opacity:1 }
+  55%{ opacity:.65 }
+  100%{ transform:scale(var(--ringend,2.6)); opacity:0 }
+}
+
+/* 먹 방울 — 링만 읽히고 방울은 거의 안 보이던 문제를 고쳤다. 크기를 키우고(7~14px),
+   튀는 거리를 늘리고, 궤적 중간에 살짝 부풀렸다 줄어들게 해 눈에 띄게 했다. */
+.fx-drop{
+  position:absolute; left:50%; top:50%;
+  width:var(--sz,9px); height:var(--sz,9px);
+  margin:calc(var(--sz,9px) / -2) 0 0 calc(var(--sz,9px) / -2);
+  border-radius:50% 50% 50% 0; background:var(--brush);
+  box-shadow:0 0 2px 1px rgba(59,47,36,.4);
+  animation:fxdrop .26s cubic-bezier(.05,.9,.15,1) forwards;
+}
+@keyframes fxdrop{
+  0%{ transform:translate(0,0) rotate(var(--rot)) scale(.7); opacity:1 }
+  35%{ transform:translate(calc(var(--dx) * .55),calc(var(--dy) * .55)) rotate(var(--rot)) scale(1.15); opacity:1 }
+  100%{ transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.25); opacity:0 }
+}
+
+/* 국면 배너 */
+.fx-phase{
+  position:absolute; left:50%; top:42%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:14px 30px; border-radius:14px; background:rgba(18,22,15,.88);
+  border:1px solid var(--gold); animation:phasein 1.8s ease-out forwards;
+}
+.fx-phase b{ font-size:26px; color:var(--gold); letter-spacing:.14em }
+.fx-phase span{ font-size:12px; color:var(--dim) }
+@keyframes phasein{
+  0%{ opacity:0; transform:translate(-50%,-40%) scale(.9) }
+  14%,72%{ opacity:1; transform:translate(-50%,-50%) scale(1) }
+  100%{ opacity:0; transform:translate(-50%,-56%) scale(1) }
+}
+
+/* 국면이 오르면 화면 톤이 바뀐다 */
+body[data-phase="1"]{ --leaf:#7a7a2f }
+body[data-phase="2"]{ --leaf:#8a4a2a }
+body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
+
+/* 토스트 */
+.toast-line{
+  padding:6px 12px; border-radius:9px; font-size:12px; font-weight:700;
+  background:rgba(18,22,15,.9); border:1px solid var(--line);
+  animation:fxin .12s ease-out;
+}
+.toast-line.good{ color:var(--gold); border-color:var(--gold) }
+.toast-line.bad{ color:#ff9b8a; border-color:#7a3a2e }
+
+/* ==================== 모바일: 스크롤 없이 한 화면에 던지기 버튼까지 ====================
+   던지기 버튼이 화면 밖으로 밀려나면 실시간 게임이 성립하지 않는다(매 턴 스크롤 불가).
+   보드·양쪽 패널·던지기 버튼이 동시에 보이도록 세로 공간을 압축한다.
+   AI 쪽 대기 말/칩은 사람이 누르지 않으므로(render-panel.js 참고) 44px 규칙에서 제외해
+   여기서 공간을 확보한다. 내(청군) 쪽 말/칩은 44px을 그대로 유지한다. */
+@media (max-width:900px){
+  html,body{ height:100dvh }
+  body{
+    height:100dvh; max-height:100dvh;
+    padding:8px; gap:8px;
+    overflow:hidden;
+  }
+
+  header{ gap:8px; flex-wrap:nowrap; flex:0 0 auto }
+  h1{ font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  /* 국면 표시는 숨기지 않는다. 지금 어느 국면인지 알려주는 유일한 상시 표시라,
+     이게 없으면 배너가 지나간 뒤 속도가 왜 달라졌는지 알 길이 없다. */
+  h1 small{ margin-left:6px }
+  /* 난이도 버튼(#diff 안), 새 게임(#restart), 결과 화면 다시 하기(#overBtn)는
+     사람이 직접 누르는 컨트롤이라 44px 예외 대상이 아니다. 폰트·좌우 패딩만 줄인다. */
+  .seg button{ padding:0 8px; font-size:11px; min-height:44px }
+  .btn{ padding:0 10px; font-size:11px; min-height:44px }
+
+  main{
+    flex:1 1 auto; min-height:0;
+    display:flex; flex-direction:column; gap:8px;
+  }
+
+  .board-wrap{
+    flex:1 1 auto; min-height:96px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  /* viewBox가 0 -110 600 710으로 늘어난 만큼(석상이 칸 위로 자란다) 비율도 맞춘다.
+     1/1로 두면 SVG가 세로로 레터박스되어 판이 그만큼 작아 보인다. */
+  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:600/710 }
+
+  .side{ flex:0 0 auto; gap:6px }
+  .panel{ padding:8px }
+  .phead{ margin-bottom:6px }
+  .energy{ margin-bottom:6px; height:12px }
+  .chips{ margin-top:6px; min-height:0; gap:4px }
+  .waiting{ margin-top:6px }
+
+  /* AI 패널: 누를 일이 없는 요소들을 압축 */
+  .panel.ai .chip{ min-height:24px; padding:3px 8px }
+  .panel.ai .wp{ width:22px; height:22px; border-width:1.5px; font-size:8px }
+  .panel.ai .waiting .lbl{ font-size:9px }
+
+  /* 내 패널: 사람이 누르는 44px 타깃은 그대로 유지, 여백만 압축 */
+  .panel.me .throw{ margin-top:6px }
+  .throw{ min-height:44px; padding:8px }
+
+  .startcard{ padding:16px 18px; gap:10px; max-height:calc(100dvh - 16px) }
+  .startcard .stitle{ font-size:16px }
+  .rules li{ font-size:11px }
+  .speedup{ font-size:11px }
+}
+
+/* ==================== 시작 화면 ====================
+   첫 로드에만 뜨는 오버레이. 판이 뒤로 비쳐 보이도록 반투명 배경 위에 카드만 얹는다.
+   #over(결과 화면)와 같은 톤을 쓰되 z-index를 그 위(60)로 둬 결과 화면과 절대
+   겹칠 일이 없게 한다(같은 순간에 둘 다 뜰 수 없긴 하지만 방어적으로). */
+#start{
+  position:fixed; inset:0; z-index:60; display:grid; place-items:center;
+  background:rgba(10,8,6,.82); backdrop-filter:blur(6px);
+  padding:16px;
+}
+#start.hidden{ display:none }
+.startcard{
+  background:var(--card); border:1px solid var(--line); border-radius:18px;
+  padding:26px 28px; text-align:center; max-width:360px; width:100%;
+  max-height:calc(100dvh - 32px); overflow:auto;
+  display:flex; flex-direction:column; gap:14px;
+}
+.startcard .stitle{ font-size:20px; font-weight:800; letter-spacing:-.02em; color:var(--hanji) }
+.rules{ list-style:none; text-align:left; display:flex; flex-direction:column; gap:7px }
+.rules li{ font-size:12.5px; color:var(--ink); line-height:1.4; padding-left:16px; position:relative }
+.rules li::before{ content:"·"; position:absolute; left:2px; color:var(--gold); font-weight:800 }
+.speedup{ font-size:12px; color:var(--gold); font-weight:700 }
+.startBtn{
+  width:100%; padding:16px; border:0; border-radius:13px; cursor:pointer;
+  font:inherit; font-size:16px; font-weight:900; letter-spacing:-.01em;
+  background:linear-gradient(180deg,var(--gold),#b9791c); color:#241a08;
+  box-shadow:0 4px 0 #8f6412; transition:.12s; min-height:52px;
+}
+.startBtn:active{ transform:translateY(4px); box-shadow:0 0 0 #8f6412 }
+.startBtn .k{ display:block; font-size:10px; font-weight:600; opacity:.75; margin-top:3px }
+.startcard .diff-seg{ align-self:center }
+
+/* 터치 타깃은 세로만이 아니라 가로도 44px을 지켜야 한다. 세그먼트 버튼이
+   38px 폭이라 엄지로 옆 버튼을 누르기 쉬웠다. */
+.seg button{ min-width:44px }

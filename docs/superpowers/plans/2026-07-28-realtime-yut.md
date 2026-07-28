@@ -89,7 +89,7 @@ test/
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test"
   }
 }
 ```
@@ -139,7 +139,7 @@ test("완주 거리는 외곽 20 / 지름길 16 / 최단 11이다", () => {
 - [ ] **Step 3: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/board.test.js
+node --testboard.test.js
 ```
 
 기대: `Cannot find module '.../src/core/board.js'` 로 전부 실패.
@@ -212,7 +212,7 @@ export const ENERGY_MAX = 3;
 - [ ] **Step 5: 테스트 통과 확인**
 
 ```bash
-node --test test/board.test.js
+node --testboard.test.js
 ```
 
 기대: `# pass 6`, `# fail 0`.
@@ -317,7 +317,7 @@ test("20만 회 분포가 이론값과 1%p 이내로 맞는다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/yut.test.js
+node --testyut.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -359,7 +359,7 @@ export function rollYut(rng = Math.random) {
 - [ ] **Step 4: 테스트 통과 확인**
 
 ```bash
-node --test test/yut.test.js
+node --testyut.test.js
 ```
 
 기대: `# pass 7`, `# fail 0`. 20만 회 테스트는 1초 안에 끝난다.
@@ -520,7 +520,7 @@ test("판 위가 아닌 말의 nodeAt은 null이다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/move.test.js
+node --testmove.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -612,7 +612,7 @@ export function applyMove(players, owner, piece, v) {
 - [ ] **Step 4: 테스트 통과 확인**
 
 ```bash
-node --test test/move.test.js
+node --testmove.test.js
 ```
 
 기대: `# pass 17`, `# fail 0`.
@@ -760,7 +760,7 @@ test("drainEvents는 큐를 비우고 반환한다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/game.test.js
+node --testgame.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -838,7 +838,7 @@ export function drainEvents(state) {
 - [ ] **Step 4: 테스트 통과 확인**
 
 ```bash
-node --test test/game.test.js
+node --testgame.test.js
 ```
 
 기대: `# pass 9`, `# fail 0`.
@@ -966,7 +966,7 @@ test("한 번에 들어온 큰 dt는 MAX_DT_MS로 잘린다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/tick.test.js
+node --testtick.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -1022,7 +1022,7 @@ export function tick(state, dtMs) {
 - [ ] **Step 4: 테스트 통과 확인**
 
 ```bash
-node --test test/tick.test.js
+node --testtick.test.js
 ```
 
 기대: `# pass 9`, `# fail 0`.
@@ -1232,7 +1232,7 @@ test("없는 결과 id를 쓰면 조용히 실패한다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/actions.test.js
+node --testactions.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -1329,7 +1329,7 @@ export function useResult(state, owner, resultId, pieceId, expectedNode) {
 - [ ] **Step 4: 테스트 통과 확인**
 
 ```bash
-node --test test/actions.test.js
+node --testactions.test.js
 ```
 
 기대: `# pass 15`, `# fail 0`.
@@ -1337,7 +1337,7 @@ node --test test/actions.test.js
 - [ ] **Step 5: 전체 코어 테스트 확인**
 
 ```bash
-node --test test/
+node --test
 ```
 
 기대: 실패 0.
@@ -1469,7 +1469,7 @@ test("게임이 끝나면 aiTick은 아무것도 하지 않는다", () => {
 - [ ] **Step 2: 테스트 실행해 실패 확인**
 
 ```bash
-node --test test/ai.test.js
+node --testai.test.js
 ```
 
 기대: 모듈 없음으로 전부 실패.
@@ -1565,7 +1565,7 @@ export function aiTick(state, owner, level, rng = Math.random) {
 - [ ] **Step 4: AI 단위 테스트 통과 확인**
 
 ```bash
-node --test test/ai.test.js
+node --testai.test.js
 ```
 
 기대: `# pass 9`, `# fail 0`.
@@ -1666,7 +1666,7 @@ test("국면이 실제로 종반까지 도달한다", () => {
 - [ ] **Step 6: 자동 대전 실행**
 
 ```bash
-node --test test/simulation.test.js
+node --testsimulation.test.js
 ```
 
 기대: `# pass 2`, `# fail 0`. 콘솔에 승률·평균 길이·던지기 횟수가 찍힌다.
@@ -2641,7 +2641,7 @@ ES 모듈은 `file://`에서 CORS 때문에 로드되지 않는다. 반드시 HT
 - [ ] **Step 8: 전체 테스트 재실행**
 
 ```bash
-node --test test/
+node --test
 ```
 
 기대: 실패 0.
@@ -2745,7 +2745,7 @@ git commit -m "docs: README와 실측값 반영"
 | 7장 상태 즉시 확정 원칙 | Task 6, 10 | 이벤트 큐 구조로 강제, Task 10 Step 4가 검사 |
 | 8장 논블로킹 250ms | Task 10 | 오버레이 없음, `THROW_MS = 250` |
 | 8장 동물 연출 | Task 2, 10 | `YUT[v].glyph`, 던지기가 아니라 이동에 붙인다 |
-| 8장 국면 전환 연출 | Task 10 | 배너 + `body[data-phase]` 톤 변화 |
+| 8장 국면 전환 연출 | Task 10 | 배너 + 톤 변화. 사운드는 사용자 결정으로 범위 제외(기획서 8장) |
 | 9장 판단 비용 절감 | Task 8, 9, 11 | 도착 지점·잡기 강조·묶음 칩·숫자키 |
 | 10장 모바일 | Task 8, 11 | 세로 우선, 44px, 하단 조작부 |
 | 11장 성능 예산 | Task 9, 11 | 프레임 갱신/상태 갱신 분리, 트레이스 확인 |
