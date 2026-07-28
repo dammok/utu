@@ -118,6 +118,10 @@ h1{font-size:19px;letter-spacing:-.02em;font-weight:800}
   --ink:#e9e6d5; --dim:#9aa383; --hanji:#f0e6cd; --brush:#3b2f24;
   --blue:#3b82c4; --blue-d:#1e5c96; --red:#cf4a3c; --red-d:#9e3226;
   --gold:#e0a83c; --leaf:#5c7a3f;
+  /* 진영 동물 석상 몸통 돌색 — 채도를 눌러 "돌"로 남기되, 청/홍이 명도까지
+     갈리게 해 색맹도 구분할 수 있게 한다 (청은 더 어둡게, 홍은 더 밝게). */
+  --stone-b:#3f5d78; --stone-b-lt:#7b98ac;
+  --stone-r:#a15644; --stone-r-lt:#cf9377;
 }
 body{
   background:
@@ -303,9 +307,9 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
     flex:1 1 auto; min-height:96px;
     display:flex; align-items:center; justify-content:center;
   }
-  /* viewBox가 0 -50 600 650으로 늘어난 만큼(석탑이 칸 위로 자란다) 비율도 맞춘다.
+  /* viewBox가 0 -110 600 710으로 늘어난 만큼(석상이 칸 위로 자란다) 비율도 맞춘다.
      1/1로 두면 SVG가 세로로 레터박스되어 판이 그만큼 작아 보인다. */
-  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:600/650 }
+  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:600/710 }
 
   .side{ flex:0 0 auto; gap:6px }
   .panel{ padding:8px }
