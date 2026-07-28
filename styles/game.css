@@ -253,7 +253,9 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
 
   header{ gap:8px; flex-wrap:nowrap; flex:0 0 auto }
   h1{ font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-  h1 small{ display:none }
+  /* 국면 표시는 숨기지 않는다. 지금 어느 국면인지 알려주는 유일한 상시 표시라,
+     이게 없으면 배너가 지나간 뒤 속도가 왜 달라졌는지 알 길이 없다. */
+  h1 small{ margin-left:6px }
   .seg button{ padding:0 8px; font-size:11px; min-height:36px }
   .btn{ padding:0 10px; font-size:11px; min-height:36px }
 
