@@ -212,8 +212,10 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 @keyframes flip{ from{ transform:rotateY(540deg) } to{ transform:rotateY(0) } }
 @keyframes fxin{ from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
 
-/* 동물 러너 */
-.fx-runner{ position:absolute; font-size:26px; line-height:1; will-change:left,top }
+/* 동물 러너 — 먹 실루엣 SVG. 크기는 svg 자체의 width/height 속성(effects.js
+   ANIMAL_SVG)이 동물마다 다르게 정해준다. */
+.fx-runner{ position:absolute; line-height:0; will-change:left,top }
+.fx-runner svg{ display:block; overflow:visible }
 
 /* 잡기 — 짧고 강하게, 그 칸에서만 터진다. 전체 300ms, 임팩트는 앞쪽에 몰린다.
    먹 방울 + 진영색 충격 링 + 짧은 섬광. 반경은 그 칸 주변 50px 남짓. */
