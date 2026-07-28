@@ -208,12 +208,39 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 /* 동물 러너 */
 .fx-runner{ position:absolute; font-size:26px; line-height:1; will-change:left,top }
 
-/* 잡기 */
-.fx-hit{
-  position:absolute; width:54px; height:54px; margin:-27px 0 0 -27px;
-  border-radius:50%; border:3px solid #ff6a55; animation:hit .6s ease-out forwards;
+/* 잡기 — 짧고 강하게, 그 칸에서만 터진다. 전체 300ms, 임팩트는 앞쪽에 몰린다.
+   먹 방울 + 진영색 충격 링 + 짧은 섬광. 반경은 그 칸 주변 50px 남짓. */
+.fx-capture{
+  position:absolute; width:100px; height:100px; margin:-50px 0 0 -50px;
+  pointer-events:none;
 }
-@keyframes hit{ from{ transform:scale(.4); opacity:1 } to{ transform:scale(1.9); opacity:0 } }
+.fx-flash{
+  position:absolute; inset:34px; border-radius:50%; background:#fff8e8;
+  animation:fxflash .14s cubic-bezier(.1,.8,.2,1) forwards;
+}
+@keyframes fxflash{ 0%{ opacity:.95; transform:scale(.5) } 100%{ opacity:0; transform:scale(1.7) } }
+
+.fx-ring{
+  position:absolute; inset:38px; border-radius:50%; border:3px solid;
+  animation:fxring .26s cubic-bezier(.08,.85,.15,1) forwards;
+}
+.fx-ring.b{ border-color:var(--blue) }
+.fx-ring.r{ border-color:var(--red) }
+@keyframes fxring{
+  0%{ transform:scale(.25); opacity:1 }
+  55%{ opacity:.65 }
+  100%{ transform:scale(var(--ringend,2.6)); opacity:0 }
+}
+
+.fx-drop{
+  position:absolute; left:50%; top:50%; width:6px; height:6px; margin:-3px 0 0 -3px;
+  border-radius:50% 50% 50% 0; background:var(--brush);
+  animation:fxdrop .24s cubic-bezier(.05,.9,.15,1) forwards;
+}
+@keyframes fxdrop{
+  0%{ transform:translate(0,0) rotate(var(--rot)) scale(1); opacity:1 }
+  100%{ transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.2); opacity:0 }
+}
 
 /* 국면 배너 */
 .fx-phase{

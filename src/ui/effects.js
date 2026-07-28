@@ -113,10 +113,32 @@ function playRunner(ev) {
   });
 }
 
+/**
+ * 잡기 연출 — 짧고 강하게, 그 칸에서만. 판이 한지·먹이라 재료를 맞춘다:
+ * 먹 방울이 방사형으로 튀고, 잡은 쪽 진영색 충격 링이 한 번 확 퍼지고,
+ * 아주 짧은 섬광이 겹친다. 전체 300ms, 임팩트는 앞쪽에 몰린다(감속 이징).
+ * count(업혀서 함께 잡힌 수)가 많을수록 방울이 늘고 링이 커진다.
+ */
 function playCapture(ev) {
   if (NODE[ev.node]) {
     const [x, y] = NODE[ev.node];
-    spawn("", "fx-hit", { left: pctX(x), top: pctY(y) }, 620);
+    const team = ev.owner === 0 ? "b" : "r";
+    const extra = Math.min(2, ev.count - 1);
+    const dropN = 6 + extra;                 // 6~8개
+    const distScale = 1 + extra * 0.12;
+    const ringEnd = (2.6 + extra * 0.3).toFixed(2);
+    let drops = "";
+    for (let i = 0; i < dropN; i++) {
+      const ang = (360 / dropN) * i + (i % 2 ? 14 : -10); // 정확히 균등하지 않게 — 먹이 튄 느낌
+      const dist = (24 + (i % 3) * 8) * distScale;         // 칸 반경 50px 안쪽
+      const rad = (ang * Math.PI) / 180;
+      const dx = (Math.cos(rad) * dist).toFixed(1);
+      const dy = (Math.sin(rad) * dist).toFixed(1);
+      drops += `<span class="fx-drop" style="--dx:${dx}px;--dy:${dy}px;--rot:${ang.toFixed(0)}deg"></span>`;
+    }
+    spawn(
+      `<div class="fx-flash"></div><div class="fx-ring ${team}" style="--ringend:${ringEnd}"></div>${drops}`,
+      "fx-capture", { left: pctX(x), top: pctY(y) }, 300);
   }
   say(ev.owner === 0 ? `${ev.count}말 잡았다! 한 번 더!` : `${ev.count}말 잡혔다`,
     ev.owner === 0 ? "good" : "bad");
