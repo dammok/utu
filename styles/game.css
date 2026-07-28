@@ -374,3 +374,7 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
 .startBtn:active{ transform:translateY(4px); box-shadow:0 0 0 #8f6412 }
 .startBtn .k{ display:block; font-size:10px; font-weight:600; opacity:.75; margin-top:3px }
 .startcard .diff-seg{ align-self:center }
+
+/* 터치 타깃은 세로만이 아니라 가로도 44px을 지켜야 한다. 세그먼트 버튼이
+   38px 폭이라 엄지로 옆 버튼을 누르기 쉬웠다. */
+.seg button{ min-width:44px }
