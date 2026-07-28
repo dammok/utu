@@ -167,10 +167,15 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 .target{ transition:opacity .18s, stroke-width .18s; pointer-events:none }
 .piece{ transition:transform .28s cubic-bezier(.4,1.4,.5,1), opacity .2s }
 .piece.hidden{ opacity:0; pointer-events:none }
+/* 강조 표시 — 탑에는 circle.body가 없으니 탑 전체(drop-shadow)와
+   바닥 링(.ring, buildBoard에서 미리 심어둔 원) 두 겹으로 표시한다.
+   기획서 9장: 종반 속도의 전제 조건이라 "움직일 수 있음"과 "잡을 수 있음"이
+   판 위에서 한눈에 갈려야 한다. */
 .piece.can{ cursor:pointer; filter:drop-shadow(0 0 7px rgba(224,168,60,.85)) }
-.piece.can circle.body{ stroke:var(--gold); stroke-width:3.5 }
-.piece.capture circle.body{ stroke:#ff6a55; stroke-width:4 }
+.piece.can .ring{ stroke:var(--gold); stroke-width:3.5 }
+.piece.capture .ring{ stroke:#ff6a55; stroke-width:4.5 }
 .piece.capture{ filter:drop-shadow(0 0 10px rgba(255,90,70,.9)) }
+.piece .ring{ transition:stroke .15s, stroke-width .15s; fill:none }
 
 /* 헤더 버튼도 터치 타깃 44px을 지킨다. 프로토타입에서 그대로 옮겨온
    패딩값은 데스크톱 마우스 기준이라 폰에서 누르기 어렵다. */
@@ -271,7 +276,9 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
     flex:1 1 auto; min-height:96px;
     display:flex; align-items:center; justify-content:center;
   }
-  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:1/1 }
+  /* viewBox가 0 -50 600 650으로 늘어난 만큼(석탑이 칸 위로 자란다) 비율도 맞춘다.
+     1/1로 두면 SVG가 세로로 레터박스되어 판이 그만큼 작아 보인다. */
+  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:600/650 }
 
   .side{ flex:0 0 auto; gap:6px }
   .panel{ padding:8px }

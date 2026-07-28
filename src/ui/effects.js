@@ -1,6 +1,13 @@
 import { YUT } from "../core/yut.js";
 import { NODE } from "../core/board.js";
 import { PHASES } from "../core/game.js";
+import { VIEW } from "./render-board.js";
+
+/** SVG viewBox 좌표(x,y)를 #fx(일반 div, 겹쳐진 오버레이) 위의 %로 바꾼다.
+ *  VIEW는 render-board.js 한 곳에서 정의되고 여기서 그대로 참조한다 — 어긋나면
+ *  달리는 동물과 잡기 이펙트가 엉뚱한 자리에 뜬다. */
+const pctX = (x) => `${(x / VIEW.w) * 100}%`;
+const pctY = (y) => `${((y - VIEW.minY) / VIEW.h) * 100}%`;
 
 /** 던지기 모션. 종반 충전 3800ms 대비 6.6%. 이보다 길면 보드를 보는 시간이 줄어든다. */
 const THROW_MS = 250;
@@ -95,21 +102,21 @@ function playRunner(ev) {
   const [x1, y1] = to;
   const dur = 260 + Math.abs(ev.v) * 40;
   const el = spawn(YUT[ev.v].glyph, "fx-runner", {
-    left: `${x0 / 600 * 100}%`,
-    top: `${y0 / 600 * 100}%`,
+    left: pctX(x0),
+    top: pctY(y0),
     transform: `translate(-50%,-50%) scaleX(${x1 >= x0 ? 1 : -1})`,
   }, dur + 120);
   requestAnimationFrame(() => {
     el.style.transition = `left ${dur}ms ease-in-out, top ${dur}ms ease-in-out`;
-    el.style.left = `${x1 / 600 * 100}%`;
-    el.style.top = `${y1 / 600 * 100}%`;
+    el.style.left = pctX(x1);
+    el.style.top = pctY(y1);
   });
 }
 
 function playCapture(ev) {
   if (NODE[ev.node]) {
     const [x, y] = NODE[ev.node];
-    spawn("", "fx-hit", { left: `${x / 600 * 100}%`, top: `${y / 600 * 100}%` }, 620);
+    spawn("", "fx-hit", { left: pctX(x), top: pctY(y) }, 620);
   }
   say(ev.owner === 0 ? `${ev.count}말 잡았다! 한 번 더!` : `${ev.count}말 잡혔다`,
     ev.owner === 0 ? "good" : "bad");

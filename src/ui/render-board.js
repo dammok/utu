@@ -13,13 +13,57 @@ function el(tag, attrs, parent) {
   return n;
 }
 
+/**
+ * SVG viewBox 기준. 위쪽 여백이 필요한 이유: 말이 이제 세워진 석탑이라 밑동(칸 중심)
+ * 위로 자란다. 맨 윗줄 칸(y=62)에 3층 탑을 놓아도 상륜 꼭대기가 잘리지 않으려면
+ * (자세한 계산은 폴리시 보고서 참고, 대략 탑 높이 94px + 여유) 62 - 50 = 12까지는
+ * 커버해야 한다. 40px 여유를 더 얹어 필터(drop-shadow) 번짐까지 흡수한다.
+ * effects.js가 좌표를 %로 바꿀 때 이 값을 그대로 참조한다 — 여기서만 바꾸면 된다.
+ */
+export const VIEW = { minY: -50, w: 600, h: 650 };
+
+const STONE = "#efe4c8";
+/** 석탑 크기 배율. mockup-towers.html의 drawPagoda 원본 치수에 곱한다. */
+const PAGODA_SCALE = 1.3;
+const TEAM_MAIN = { 0: "var(--blue)", 1: "var(--red)" };
+
+/** mockup-towers.html의 drawPagoda를 그대로 이식 — 치수만 PAGODA_SCALE배. n=쌓인 말 개수(층수). */
+function drawPagoda(parent, teamId, n) {
+  const s = PAGODA_SCALE;
+  const main = TEAM_MAIN[teamId];
+  el("ellipse", { cx: 0, cy: 9 * s, rx: 17 * s, ry: 4.5 * s, fill: "var(--brush)", opacity: 0.18 }, parent);
+  el("path", {
+    d: `M${-17 * s},${8 * s} L${-14 * s},0 L${14 * s},0 L${17 * s},${8 * s} Z`,
+    fill: STONE, stroke: "var(--brush)", "stroke-width": 1.8 * s, "stroke-linejoin": "round",
+  }, parent);
+  el("path", { d: `M${-14.5 * s},0 L${14.5 * s},0`, stroke: "var(--brush)", "stroke-width": 1.4 * s, opacity: 0.55 }, parent);
+
+  let y = 0;
+  for (let i = 0; i < n; i++) {
+    const k = 1 - i * 0.12;
+    const bw = 10.5 * k * s, rw = 15.5 * k * s;
+    el("rect", {
+      x: -bw, y: y - 13 * s, width: bw * 2, height: 13 * s, rx: 1.2 * s,
+      fill: STONE, stroke: "var(--brush)", "stroke-width": 1.7 * s,
+    }, parent);
+    el("path", {
+      d: `M${-rw},${y - 13.5 * s} L${-rw * 0.66},${y - 19.5 * s} L${rw * 0.66},${y - 19.5 * s} `
+        + `L${rw},${y - 13.5 * s} L${rw * 0.78},${y - 11.8 * s} L${-rw * 0.78},${y - 11.8 * s} Z`,
+      fill: main, stroke: "var(--brush)", "stroke-width": 1.7 * s, "stroke-linejoin": "round",
+    }, parent);
+    y -= 20.5 * s;
+  }
+  el("path", { d: `M0,${y} v${-5 * s}`, stroke: "var(--brush)", "stroke-width": 2 * s, "stroke-linecap": "round" }, parent);
+  el("circle", { cx: 0, cy: y - 7.5 * s, r: 3.2 * s, fill: main, stroke: "var(--brush)", "stroke-width": 1.6 * s }, parent);
+}
+
 export function buildBoard(svgEl, state, handlers) {
   svg = svgEl;
   svg.innerHTML = "";
   pieceEls = {};
   targetEls = {};
 
-  el("rect", { x: 0, y: 0, width: 600, height: 600, rx: 10, fill: "var(--hanji)" }, svg);
+  el("rect", { x: 0, y: VIEW.minY, width: VIEW.w, height: VIEW.h, rx: 10, fill: "var(--hanji)" }, svg);
 
   const lines = el("g", {
     stroke: "var(--brush)", "stroke-width": 3.4, "stroke-linecap": "round",
@@ -69,17 +113,13 @@ export function buildBoard(svgEl, state, handlers) {
   for (const P of state.players) {
     for (const p of P.pieces) {
       const gg = el("g", { class: "piece hidden" }, pg);
+      // 강조 링 — 탑에는 circle.body가 없으니 "이동 가능"/"잡기 가능" 표시는
+      // 이 바닥 링 하나로 대신한다 (game.css의 .piece.can/.piece.capture 참고).
       el("circle", {
-        class: "body", cx: 0, cy: 0, r: 15,
-        fill: P.id === 0 ? "var(--blue-d)" : "var(--red-d)",
-        stroke: P.id === 0 ? "#7db8ea" : "#f0a294", "stroke-width": 2.4,
+        class: "ring", cx: 0, cy: 9 * PAGODA_SCALE, r: 26 * PAGODA_SCALE,
+        fill: "none", stroke: "none", "stroke-width": 0,
       }, gg);
-      el("circle", { cx: 0, cy: -4, r: 6, fill: "#fff", opacity: 0.16 }, gg);
-      const t = el("text", {
-        class: "cnt", x: 0, y: 5, "text-anchor": "middle", "font-size": 13,
-        "font-weight": 900, fill: "#fff", "font-family": "inherit",
-      }, gg);
-      t.textContent = "";
+      el("g", { class: "tower" }, gg);
       gg.addEventListener("click", () => handlers.onPieceClick(P.id, p.id));
       gg.addEventListener("mouseenter", () => handlers.onPieceHover(P.id, p.id));
       gg.addEventListener("mouseleave", () => handlers.onPieceLeave());
@@ -93,6 +133,7 @@ export function buildBoard(svgEl, state, handlers) {
  */
 export function renderBoard(state, selection) {
   const leaders = {};
+  const visible = []; // z-order 정렬용 — {e, y}
 
   for (const P of state.players) {
     const byNode = {};
@@ -105,13 +146,16 @@ export function renderBoard(state, selection) {
     }
     for (const n in byNode) {
       const list = byNode[n], [x, y] = NODE[n];
-      const off = P.id === 0 ? -2 : 2;   // 두 진영이 완전히 겹쳐 보이지 않도록
+      const off = P.id === 0 ? -3 : 3;   // 두 진영이 완전히 겹쳐 보이지 않도록
       list.forEach((p, i) => {
         const e = pieceEls[P.id + "-" + p.id];
         if (i === 0) {
           e.classList.remove("hidden");
           e.setAttribute("transform", `translate(${x + off},${y})`);
-          e.querySelector(".cnt").textContent = list.length > 1 ? list.length : "";
+          const tower = e.querySelector(".tower");
+          tower.innerHTML = "";
+          drawPagoda(tower, P.id, list.length); // 층수 = 업힌 말 개수
+          visible.push({ e, y });
         } else {
           e.classList.add("hidden");
         }
@@ -119,6 +163,10 @@ export function renderBoard(state, selection) {
       leaders[P.id + "|" + n] = list[0];
     }
   }
+
+  // 겹치는 순서: 위쪽(y가 작은) 칸의 탑부터 그려야 아래쪽 탑이 위로 온다.
+  visible.sort((a, b) => a.y - b.y);
+  for (const { e } of visible) e.parentNode.appendChild(e);
 
   for (const k in targetEls) targetEls[k].style.opacity = 0;
   if (!selection) return;
