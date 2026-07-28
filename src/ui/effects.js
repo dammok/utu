@@ -195,17 +195,20 @@ function playCapture(ev) {
     const [x, y] = NODE[ev.node];
     const team = ev.owner === 0 ? "b" : "r";
     const extra = Math.min(2, ev.count - 1);
-    const dropN = 6 + extra;                 // 6~8개
-    const distScale = 1 + extra * 0.12;
+    // 방울이 화면에서 거의 안 보이던 문제 — 개수·크기·궤적 거리를 모두 키웠다.
+    // count가 늘수록 방울도 늘고(9~13개) 더 멀리 튄다.
+    const dropN = 9 + extra * 2;             // 9~13개
+    const distScale = 1 + extra * 0.16;
     const ringEnd = (2.6 + extra * 0.3).toFixed(2);
     let drops = "";
     for (let i = 0; i < dropN; i++) {
       const ang = (360 / dropN) * i + (i % 2 ? 14 : -10); // 정확히 균등하지 않게 — 먹이 튄 느낌
-      const dist = (24 + (i % 3) * 8) * distScale;         // 칸 반경 50px 안쪽
+      const dist = (32 + (i % 3) * 11) * distScale;        // 칸 반경 50px 남짓까지 튄다
+      const sz = 8 + (i % 3) * 3;                          // 7~14px — 크기를 섞어 튄 느낌
       const rad = (ang * Math.PI) / 180;
       const dx = (Math.cos(rad) * dist).toFixed(1);
       const dy = (Math.sin(rad) * dist).toFixed(1);
-      drops += `<span class="fx-drop" style="--dx:${dx}px;--dy:${dy}px;--rot:${ang.toFixed(0)}deg"></span>`;
+      drops += `<span class="fx-drop" style="--dx:${dx}px;--dy:${dy}px;--rot:${ang.toFixed(0)}deg;--sz:${sz}px"></span>`;
     }
     spawn(
       `<div class="fx-flash"></div><div class="fx-ring ${team}" style="--ringend:${ringEnd}"></div>${drops}`,

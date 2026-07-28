@@ -241,14 +241,20 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
   100%{ transform:scale(var(--ringend,2.6)); opacity:0 }
 }
 
+/* 먹 방울 — 링만 읽히고 방울은 거의 안 보이던 문제를 고쳤다. 크기를 키우고(7~14px),
+   튀는 거리를 늘리고, 궤적 중간에 살짝 부풀렸다 줄어들게 해 눈에 띄게 했다. */
 .fx-drop{
-  position:absolute; left:50%; top:50%; width:6px; height:6px; margin:-3px 0 0 -3px;
+  position:absolute; left:50%; top:50%;
+  width:var(--sz,9px); height:var(--sz,9px);
+  margin:calc(var(--sz,9px) / -2) 0 0 calc(var(--sz,9px) / -2);
   border-radius:50% 50% 50% 0; background:var(--brush);
-  animation:fxdrop .24s cubic-bezier(.05,.9,.15,1) forwards;
+  box-shadow:0 0 2px 1px rgba(59,47,36,.4);
+  animation:fxdrop .26s cubic-bezier(.05,.9,.15,1) forwards;
 }
 @keyframes fxdrop{
-  0%{ transform:translate(0,0) rotate(var(--rot)) scale(1); opacity:1 }
-  100%{ transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.2); opacity:0 }
+  0%{ transform:translate(0,0) rotate(var(--rot)) scale(.7); opacity:1 }
+  35%{ transform:translate(calc(var(--dx) * .55),calc(var(--dy) * .55)) rotate(var(--rot)) scale(1.15); opacity:1 }
+  100%{ transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.25); opacity:0 }
 }
 
 /* 국면 배너 */
