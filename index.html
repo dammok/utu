@@ -11,7 +11,7 @@
 <header>
   <h1>실시간 윷놀이 <small id="phaseLabel">도입</small></h1>
   <div class="spacer"></div>
-  <div class="seg" id="diff">
+  <div class="seg diff-seg" id="diff">
     <button data-d="0">쉬움</button>
     <button data-d="1" class="on">보통</button>
     <button data-d="2">어려움</button>
@@ -59,6 +59,27 @@
   <p id="overSub"></p>
   <button class="btn" id="overBtn">다시 하기</button>
 </div></div>
+
+<div id="start">
+  <div class="startcard">
+    <h2 class="stitle">실시간 윷놀이</h2>
+    <ul class="rules">
+      <li>에너지가 한 칸 차면 윷을 한 번 던집니다</li>
+      <li>나온 결과를 골라 말을 옮깁니다 — 이동에는 에너지가 들지 않습니다</li>
+      <li>윷·모가 나오거나 상대 말을 잡으면 한 번 더 던집니다</li>
+      <li>말 4개를 먼저 모두 완주시키면 이깁니다</li>
+    </ul>
+    <p class="speedup">진행할수록 점점 빨라집니다.</p>
+    <button class="btn startBtn" id="startBtn">
+      시작하기<span class="k">Enter / Space</span>
+    </button>
+    <div class="seg diff-seg" id="startDiff">
+      <button data-d="0">쉬움</button>
+      <button data-d="1" class="on">보통</button>
+      <button data-d="2">어려움</button>
+    </div>
+  </div>
+</div>
 
 <script type="module" src="src/main.js"></script>
 </body>

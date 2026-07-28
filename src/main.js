@@ -13,6 +13,10 @@ let selection = null;   // { resultId, v } | null
 let level = 1;
 let dirty = true;       // 이번 프레임에 패널을 다시 그려야 하는가
 let lastTs = 0;
+// 시작 화면이 떠 있는 동안 true. 첫 로드에만 걸리는 게이트라 newGame()은
+// 이 값을 절대 건드리지 않는다 — "새 게임"/"다시 하기"는 시작 화면 없이 바로
+// 새 판을 시작해야 하기 때문이다(포트폴리오 데모라 재시작은 빨라야 한다).
+let started = false;
 // 결과 화면을 이미 띄웠는가. state.over는 클릭 핸들러(clickPiece)처럼
 // loop() 바깥에서도 true로 바뀔 수 있어, 프레임 시작 시점의 스냅샷(wasOver)만으로는
 // "방금 끝남"을 놓친다 — 청군이 마지막 말을 클릭해 골인시키는 순간이 그 경우다.
@@ -51,7 +55,7 @@ function newGame() {
 }
 
 function clickPiece(pieceId) {
-  if (selection === null || state.over) return;
+  if (!started || selection === null || state.over) return;
   // expectedNode는 "클릭한 순간의 실제 위치"가 아니라 "플레이어가 화면에서 본 위치"여야
   // 한다. JS는 단일 스레드라 nodeAt(piece)를 클릭 직후 여기서 다시 읽으면 그 사이에
   // 아무도 끼어들 수 없으므로 현재 위치와 항상 같아져 버려 — 무효화 판정
@@ -70,6 +74,12 @@ function clickPiece(pieceId) {
     notify("그 말은 이 수로 움직일 수 없습니다", "bad");
   }
   markDirty();
+}
+
+function startGame() {
+  if (started) return;
+  started = true;
+  document.getElementById("start").classList.add("hidden");
 }
 
 function finishScreen() {
@@ -92,19 +102,28 @@ const panelHandlers = {
 };
 
 bindInput({
-  onThrow: () => { if (throwYut(state, 0).ok) markDirty(); },
+  // Space/Enter의 이중 역할: 시작 화면이 떠 있으면 시작, 이미 시작했으면 던지기.
+  onThrow: () => {
+    if (!started) { startGame(); return; }
+    if (throwYut(state, 0).ok) markDirty();
+  },
   onPiece: (pieceId) => clickPiece(pieceId),
   onCancel: () => { selection = null; hideGhost(); markDirty(); },
   onRestart: newGame,
   onDifficulty: (d) => { level = d; newGame(); },
+  onStart: startGame,
 });
 
 function loop(ts) {
   const dt = lastTs ? ts - lastTs : 0;
   lastTs = ts;
 
-  tick(state, dt);
-  aiTick(state, 1, AI_LEVELS[level]);
+  // 시작 화면이 떠 있는 동안은 코어를 건드리지 않는다 — 에너지도 안 차고
+  // AI도 안 움직인다. 렌더링(아래)은 계속 돌려 빈 판이 비쳐 보이게 한다.
+  if (started) {
+    tick(state, dt);
+    aiTick(state, 1, AI_LEVELS[level]);
+  }
 
   const events = drainEvents(state);
   if (events.length) { playEvents(events); markDirty(); }
