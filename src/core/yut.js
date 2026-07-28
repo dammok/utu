@@ -5,12 +5,12 @@
 const FLAT_P = 0.6;
 
 export const YUT = {
-  "-1": { name: "백도", animal: "돼지", glyph: "🐖" },
-  1: { name: "도", animal: "돼지", glyph: "🐖" },
-  2: { name: "개", animal: "개", glyph: "🐕" },
-  3: { name: "걸", animal: "양", glyph: "🐑" },
-  4: { name: "윷", animal: "소", glyph: "🐄" },
-  5: { name: "모", animal: "말", glyph: "🐎" },
+  "-1": { name: "백도", animal: "돼지" },
+  1: { name: "도", animal: "돼지" },
+  2: { name: "개", animal: "개" },
+  3: { name: "걸", animal: "양" },
+  4: { name: "윷", animal: "소" },
+  5: { name: "모", animal: "말" },
 };
 
 /**

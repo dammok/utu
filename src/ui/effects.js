@@ -2,6 +2,7 @@ import { YUT } from "../core/yut.js";
 import { NODE } from "../core/board.js";
 import { PHASES } from "../core/game.js";
 import { VIEW } from "./render-board.js";
+import { runnerIcon } from "./animal-icons.js";
 
 /** SVG viewBox 좌표(x,y)를 #fx(일반 div, 겹쳐진 오버레이) 위의 %로 바꾼다.
  *  VIEW는 render-board.js 한 곳에서 정의되고 여기서 그대로 참조한다 — 어긋나면
@@ -94,74 +95,9 @@ function nodeOf(id) {
 }
 
 /**
- * 도개걸윷모 다섯 동물 — 먹 실루엣. OS마다 다르게 보이는 이모지(🐖🐕🐑🐄🐎) 대신
- * 굵고 단순한 실루엣으로 그린다. 작게 렌더되므로 세부 대신 크기 차이를 우선한다:
- * 돼지(1) < 개(2) < 양(3) < 소(4) < 말(5) 순으로 실제 픽셀 크기 자체를 키운다 —
- * 도개걸윷모가 원래 가축의 크기·속도 순서를 딴 이름이라, 크기만으로도 "몇 칸"인지
- * 형태를 몰라도 전달된다. 결정적 특징 하나씩만: 돼지=뭉툭한 주둥이+둥근 몸,
- * 개=쫑긋 귀+올린 꼬리, 양=복슬복슬한 등+말린 뿔, 소=뿔+육중한 몸, 말=긴 다리+갈기.
- * 진영색은 코·이마의 작은 반점에만 살짝 섞어 누구 말인지 알게 한다.
- * 백도(-1)는 도(1)와 같은 돼지를 쓴다 — 방향은 이동 방향에 따라 자동으로 뒤집힌다.
+ * 도개걸윷모 다섯 동물 실루엣은 animal-icons.js 한 곳에 모여 있다 — 결과 칩
+ * (render-panel.js)과 같은 그림을 써야 하기 때문이다. 여기서 다시 그리지 않는다.
  */
-const ANIMAL_SVG = {
-  1: (t) => `<svg viewBox="0 0 34 20" width="24" height="14">
-    <ellipse cx="14" cy="10" rx="11" ry="7" fill="var(--brush)"/>
-    <rect x="4" y="15" width="3" height="4.5" rx="1.3" fill="var(--brush)"/>
-    <rect x="10" y="15.5" width="3" height="4.5" rx="1.3" fill="var(--brush)"/>
-    <rect x="17" y="15.5" width="3" height="4.5" rx="1.3" fill="var(--brush)"/>
-    <rect x="22" y="15" width="3" height="4.5" rx="1.3" fill="var(--brush)"/>
-    <rect x="23" y="5" width="8" height="7" rx="3.2" fill="var(--brush)"/>
-    <ellipse cx="30.5" cy="9" rx="2.4" ry="2" fill="${t}"/>
-    <path d="M3,7 q-3,-3.4 -0.6,-6.2" stroke="var(--brush)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  </svg>`,
-  2: (t) => `<svg viewBox="0 0 40 24" width="28" height="17">
-    <ellipse cx="17" cy="14" rx="13" ry="6.5" fill="var(--brush)"/>
-    <rect x="5" y="19" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="12" y="19.5" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="20" y="19.5" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="27" y="19" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <circle cx="30" cy="9" r="6" fill="var(--brush)"/>
-    <path d="M25,4 L27,-1 L30,5 Z" fill="var(--brush)"/>
-    <path d="M33.5,2 q6,-4 5,-9" stroke="var(--brush)" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <ellipse cx="33" cy="9.5" rx="2" ry="1.7" fill="${t}"/>
-  </svg>`,
-  3: (t) => `<svg viewBox="0 0 46 26" width="32" height="18">
-    <ellipse cx="19" cy="15" rx="15" ry="7" fill="var(--brush)"/>
-    <circle cx="8" cy="7" r="5.4" fill="var(--brush)"/>
-    <circle cx="17" cy="4.6" r="5.8" fill="var(--brush)"/>
-    <circle cx="27" cy="6" r="5.4" fill="var(--brush)"/>
-    <rect x="6" y="20" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="14" y="20.5" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="23" y="20.5" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <rect x="31" y="20" width="3" height="5" rx="1.3" fill="var(--brush)"/>
-    <circle cx="37" cy="12" r="6" fill="var(--brush)"/>
-    <path d="M39,7 q4,-1 3,4" stroke="var(--brush)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-    <ellipse cx="39.5" cy="13" rx="2.1" ry="1.7" fill="${t}"/>
-  </svg>`,
-  4: (t) => `<svg viewBox="0 0 54 30" width="38" height="21">
-    <rect x="8" y="8" width="34" height="16" rx="6" fill="var(--brush)"/>
-    <rect x="6" y="23" width="4" height="6" rx="1.4" fill="var(--brush)"/>
-    <rect x="16" y="23.5" width="4" height="6" rx="1.4" fill="var(--brush)"/>
-    <rect x="30" y="23.5" width="4" height="6" rx="1.4" fill="var(--brush)"/>
-    <rect x="40" y="23" width="4" height="6" rx="1.4" fill="var(--brush)"/>
-    <circle cx="45" cy="12" r="7" fill="var(--brush)"/>
-    <path d="M41,6 q-4,-6 1,-8" stroke="var(--brush)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-    <path d="M49,6 q4,-6 -1,-8" stroke="var(--brush)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-    <ellipse cx="47.5" cy="13" rx="2.4" ry="1.9" fill="${t}"/>
-  </svg>`,
-  5: (t) => `<svg viewBox="0 0 64 40" width="46" height="29">
-    <ellipse cx="26" cy="22" rx="18" ry="8" fill="var(--brush)"/>
-    <rect x="8" y="29" width="4.4" height="10" rx="1.5" fill="var(--brush)"/>
-    <rect x="20" y="30" width="4.4" height="10" rx="1.5" fill="var(--brush)"/>
-    <rect x="34" y="30" width="4.4" height="10" rx="1.5" fill="var(--brush)"/>
-    <rect x="44" y="29" width="4.4" height="10" rx="1.5" fill="var(--brush)"/>
-    <path d="M40,16 C48,10 56,8 60,2 C58,10 52,14 46,18 Z" fill="var(--brush)"/>
-    <circle cx="55" cy="10" r="6.5" fill="var(--brush)"/>
-    <path d="M42,8 q6,-4 12,-2 M40,12 q7,-3 13,-1" stroke="var(--brush)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    <ellipse cx="58" cy="11" rx="2.2" ry="1.8" fill="${t}"/>
-  </svg>`,
-};
-ANIMAL_SVG["-1"] = ANIMAL_SVG[1];
 
 /** 동물이 출발 칸에서 도착 칸으로 달린다. 여러 마리가 겹쳐도 서로 막지 않는다. */
 function playRunner(ev) {
@@ -172,7 +108,7 @@ function playRunner(ev) {
   const [x1, y1] = to;
   const dur = 260 + Math.abs(ev.v) * 40;
   const teamTint = ev.owner === 0 ? "var(--blue)" : "var(--red)";
-  const el = spawn(ANIMAL_SVG[ev.v](teamTint), "fx-runner", {
+  const el = spawn(runnerIcon(ev.v, teamTint), "fx-runner", {
     left: pctX(x0),
     top: pctY(y0),
     transform: `translate(-50%,-50%) scaleX(${x1 >= x0 ? 1 : -1})`,

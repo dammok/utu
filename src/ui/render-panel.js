@@ -4,6 +4,7 @@ import { YUT } from "../core/yut.js";
 import { canMove } from "../core/move.js";
 import { canThrow } from "../core/actions.js";
 import { drawMiniStatue } from "./render-board.js";
+import { chipIcon } from "./animal-icons.js";
 
 const SVGNS = "http://www.w3.org/2000/svg";
 /** drawMiniStatue(s=0.85, baseY=0)의 실측 bbox(양 진영 모두 대략 -11~14.5 x, -37~0 y)에
@@ -79,7 +80,7 @@ function renderChips(state, selection, handlers) {
       c.className = "chip" + (v < 0 ? " back" : "") + (P.id === 1 ? " static" : "")
         + (selected ? " sel" : "");
       c.innerHTML =
-        `<span class="g">${YUT[v].glyph}</span>` +
+        chipIcon(v) +
         `<span>${YUT[v].name}</span>` +
         `<span class="v">${v > 0 ? "+" : ""}${v}</span>` +
         (list.length > 1 ? `<span class="n">×${list.length}</span>` : "");
