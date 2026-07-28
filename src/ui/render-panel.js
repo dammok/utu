@@ -1,5 +1,5 @@
 import { ENERGY_MAX } from "../core/board.js";
-import { PHASES } from "../core/game.js";
+import { PHASES, doneCount } from "../core/game.js";
 import { YUT } from "../core/yut.js";
 import { canMove } from "../core/move.js";
 import { canThrow } from "../core/actions.js";
@@ -45,7 +45,7 @@ export function renderPanels(state, selection, handlers) {
   renderChips(state, selection, handlers);
   renderWaiting(state, selection, handlers);
   for (const P of state.players)
-    $("goal" + P.id).textContent = P.pieces.filter((p) => p.state === "done").length;
+    $("goal" + P.id).textContent = doneCount(state, P.id);
 }
 
 function renderChips(state, selection, handlers) {

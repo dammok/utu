@@ -109,11 +109,20 @@ function loop(ts) {
   const events = drainEvents(state);
   if (events.length) { playEvents(events); markDirty(); }
 
-  // 고른 칩이 만료되어 사라졌으면 선택을 푼다
+  // 고른 결과 id가 만료로 사라졌어도 같은 값의 결과가 남아있으면 선택을 승계한다.
+  // 칩은 값 단위로 묶여 보이므로(renderChips) 플레이어가 실제로 고른 것은 특정
+  // 결과 id가 아니라 "개"라는 값이다 — 묶음 중 가장 오래된 것부터 만료되기 때문에,
+  // id 하나가 사라졌다고 선택을 통째로 풀면 아직 같은 값이 여러 개 남아있는데도
+  // 조준이 풀려버린다. 같은 값이 하나도 안 남았을 때만 선택을 완전히 푼다.
   if (selection !== null
       && !state.players[0].results.some((r) => r.id === selection.resultId)) {
-    selection = null;
-    hideGhost();
+    const sameValue = state.players[0].results.filter((r) => r.v === selection.v);
+    if (sameValue.length) {
+      selection = { resultId: sameValue[0].id, v: selection.v };
+    } else {
+      selection = null;
+      hideGhost();
+    }
     markDirty();
   }
 

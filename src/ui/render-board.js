@@ -6,8 +6,6 @@ let pieceEls = {};
 let ghostEl = null;
 let targetEls = {};
 
-export const nodeXY = (node) => NODE[node];
-
 function el(tag, attrs, parent) {
   const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
   for (const k in attrs) n.setAttribute(k, attrs[k]);

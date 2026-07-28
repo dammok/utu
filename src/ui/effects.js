@@ -1,8 +1,9 @@
 import { YUT } from "../core/yut.js";
 import { NODE } from "../core/board.js";
+import { PHASES } from "../core/game.js";
 
 /** 던지기 모션. 종반 충전 3800ms 대비 6.6%. 이보다 길면 보드를 보는 시간이 줄어든다. */
-export const THROW_MS = 250;
+const THROW_MS = 250;
 
 let fx = null;
 let toast = null;
@@ -116,9 +117,8 @@ function playCapture(ev) {
 
 function playPhase(ev) {
   document.body.dataset.phase = ev.to;
-  const names = ["도입", "전개", "종반"];
   spawn(
-    `<b>${names[ev.to]}</b><span>${ev.to === 2 ? "속도가 크게 오릅니다" : "속도가 오릅니다"}</span>`,
+    `<b>${PHASES[ev.to].name}</b><span>${ev.to === 2 ? "속도가 크게 오릅니다" : "속도가 오릅니다"}</span>`,
     "fx-phase", {}, 1800);
 }
 

@@ -121,8 +121,9 @@ h1{font-size:19px;letter-spacing:-.02em;font-weight:800}
 }
 body{
   background:
-    radial-gradient(120% 80% at 50% 0%, #1e2717 0%, transparent 60%),
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--leaf) 38%, #12160f) 0%, transparent 60%),
     var(--bg);
+  transition:background .6s ease;
 }
 
 /* 세로 우선. 데스크톱에서만 2단. */

@@ -2,7 +2,7 @@
  * 윷가락 4개. 배(평평한 면)가 나올 확률 0.6. 0번 가락에 백도 표식.
  * 도개걸윷모는 가축의 크기·속도 순서를 딴 이름이므로 동물을 함께 들고 다닌다.
  */
-export const FLAT_P = 0.6;
+const FLAT_P = 0.6;
 
 export const YUT = {
   "-1": { name: "백도", animal: "돼지", glyph: "🐖" },

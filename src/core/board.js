@@ -3,8 +3,8 @@
  * 외곽 20칸 + 지름길 8칸 + 중앙 1칸 = 29칸.
  * DOM에 의존하지 않는다 — 좌표는 SVG viewBox 600x600 기준의 순수 숫자다.
  */
-export const M = 62;
-export const STEP = (600 - M * 2) / 5;
+const M = 62;
+const STEP = (600 - M * 2) / 5;
 
 const g = (c, r) => [M + c * STEP, M + r * STEP];
 const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
