@@ -174,3 +174,8 @@ svg#board{ width:100%; height:auto; display:block; border-radius:10px }
 /* 헤더 버튼도 터치 타깃 44px을 지킨다. 프로토타입에서 그대로 옮겨온
    패딩값은 데스크톱 마우스 기준이라 폰에서 누르기 어렵다. */
 .btn, .seg button{ min-height:44px }
+
+.chip{ display:flex; align-items:center; gap:6px }
+.chip .g{ font-size:16px; line-height:1 }
+.eseg.full{ animation:pop .18s ease-out }
+@keyframes pop{ from{ transform:scale(1) } 50%{ transform:scale(1.06) } to{ transform:scale(1) } }
