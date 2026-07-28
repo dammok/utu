@@ -237,3 +237,50 @@ body[data-phase="2"] .board-wrap{ box-shadow:0 0 0 1px rgba(224,110,60,.35) }
 }
 .toast-line.good{ color:var(--gold); border-color:var(--gold) }
 .toast-line.bad{ color:#ff9b8a; border-color:#7a3a2e }
+
+/* ==================== 모바일: 스크롤 없이 한 화면에 던지기 버튼까지 ====================
+   던지기 버튼이 화면 밖으로 밀려나면 실시간 게임이 성립하지 않는다(매 턴 스크롤 불가).
+   보드·양쪽 패널·던지기 버튼이 동시에 보이도록 세로 공간을 압축한다.
+   AI 쪽 대기 말/칩은 사람이 누르지 않으므로(render-panel.js 참고) 44px 규칙에서 제외해
+   여기서 공간을 확보한다. 내(청군) 쪽 말/칩은 44px을 그대로 유지한다. */
+@media (max-width:900px){
+  html,body{ height:100dvh }
+  body{
+    height:100dvh; max-height:100dvh;
+    padding:8px; gap:8px;
+    overflow:hidden;
+  }
+
+  header{ gap:8px; flex-wrap:nowrap; flex:0 0 auto }
+  h1{ font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  h1 small{ display:none }
+  .seg button{ padding:0 8px; font-size:11px; min-height:36px }
+  .btn{ padding:0 10px; font-size:11px; min-height:36px }
+
+  main{
+    flex:1 1 auto; min-height:0;
+    display:flex; flex-direction:column; gap:8px;
+  }
+
+  .board-wrap{
+    flex:1 1 auto; min-height:96px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  svg#board{ width:auto; height:100%; max-width:100%; aspect-ratio:1/1 }
+
+  .side{ flex:0 0 auto; gap:6px }
+  .panel{ padding:8px }
+  .phead{ margin-bottom:6px }
+  .energy{ margin-bottom:6px; height:12px }
+  .chips{ margin-top:6px; min-height:0; gap:4px }
+  .waiting{ margin-top:6px }
+
+  /* AI 패널: 누를 일이 없는 요소들을 압축 */
+  .panel.ai .chip{ min-height:24px; padding:3px 8px }
+  .panel.ai .wp{ width:22px; height:22px; border-width:1.5px; font-size:8px }
+  .panel.ai .waiting .lbl{ font-size:9px }
+
+  /* 내 패널: 사람이 누르는 44px 타깃은 그대로 유지, 여백만 압축 */
+  .panel.me .throw{ margin-top:6px }
+  .throw{ min-height:44px; padding:8px }
+}
